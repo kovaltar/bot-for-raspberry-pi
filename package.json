@@ -1,0 +1,17 @@
+{
+  "name": "bot-for-raspberry-pi",
+  "version": "1.0.0",
+  "main": "bot.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Taras Koval",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "grammy": "^1.37.0",
+    "node-fetch": "^3.3.2"
+  }
+}
