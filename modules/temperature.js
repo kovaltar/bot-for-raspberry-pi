@@ -21,5 +21,4 @@ function getTemperature() {
 
 export const temperature = {
   getTemperature,
-  getTemperatureFormatted,
 };
