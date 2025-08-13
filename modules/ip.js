@@ -9,7 +9,7 @@ import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const IP_FILE = path.join(__dirname, '../last_ip.txt');
+const ipFilePath = path.join(__dirname, '../last_ip.txt');
 
 // gets a public IP address from the ipify service
 function getPublicIP() {
@@ -25,7 +25,7 @@ function getPublicIP() {
 // reads the last saved IP from a file
 function readLastIP() {
   try {
-    return fs.readFileSync(IP_FILE, 'utf8').trim();
+    return fs.readFileSync(ipFilePath, 'utf8').trim();
   } catch {
     return null;
   }
@@ -33,12 +33,12 @@ function readLastIP() {
 
 // saves the current IP to a file
 function saveCurrentIP(ip) {
-  fs.writeFileSync(IP_FILE, ip, 'utf8');
+  fs.writeFileSync(ipFilePath, ip, 'utf8');
 }
 
 // updates the IP address in the DNS record via the Cloudflare API
-async function updateCloudflare(ip, { CF_API_TOKEN, ZONE_ID, RECORD_ID }) {
-  const url = `https://api.cloudflare.com/client/v4/zones/${ZONE_ID}/dns_records/${RECORD_ID}`;
+async function updateCloudflare(ip, { CF_API_TOKEN, CF_ZONE_ID, CF_RECORD_ID }) {
+  const url = `https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/dns_records/${CF_RECORD_ID}`;
   const response = await fetch(url, {
     method: 'PUT',
     headers: {
@@ -57,7 +57,7 @@ async function updateCloudflare(ip, { CF_API_TOKEN, ZONE_ID, RECORD_ID }) {
   const result = await response.json();
 
   if (!result.success) {
-    throw new Error(`Cloudflare update failed: ${JSON.stringify(result.errors)}`);
+    throw new Error(`❌ Cloudflare update failed: ${JSON.stringify(result.errors)}`);
   }
 
   return result;

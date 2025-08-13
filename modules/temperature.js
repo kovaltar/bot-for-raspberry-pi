@@ -13,7 +13,7 @@ function getTemperature() {
 
     return celsius.toFixed(1);
   } catch (error) {
-    console.error('Не вдалося зчитати температуру:', error.message);
+    console.error('❌ Failed to read temperature value:', error.message);
 
     return null;
   }

@@ -5,29 +5,29 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const FILE = path.join(__dirname, '../data/sites-status.json');
+const sitesStatusFilePath = path.join(__dirname, '../data/sites-status.json');
 
-async function read() {
+async function readStatuses() {
   try {
-    const data = await fs.readFile(FILE, 'utf8');
+    const data = await fs.readFile(sitesStatusFilePath, 'utf8');
 
     return JSON.parse(data);
   } catch {
-    return {};
+    console.error("❌ An error occurred while reading data/sites-status.json file:", err.message);
   }
 }
 
-async function write(results) {
+async function writeStatuses(results) {
   const statusMap = {};
 
   for (const { site, ok, status } of results) {
     statusMap[site] = { ok, status };
   }
 
-  await fs.writeFile(FILE, JSON.stringify(statusMap, null, 2), 'utf8');
+  await fs.writeFile(sitesStatusFilePath, JSON.stringify(statusMap, null, 2), 'utf8');
 }
 
 export const statusStorage = {
-  read,
-  write,
+  readStatuses,
+  writeStatuses,
 };

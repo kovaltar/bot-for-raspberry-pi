@@ -3,7 +3,7 @@ import { sitesUtils } from "./modules/sitesUtils.js";
 import { tg } from "./modules/telegram.js";
 import { statusStorage } from "./modules/sitesStatusStorage.js";
 
-const { TELEGRAM_BOT_TOKEN, CHAT_ID, SITE_CHECK_MINUTES } = process.env;
+const { TG_BOT_TOKEN, TG_CHAT_ID, SITE_CHECK_MINUTES } = process.env;
 const sites = sitesUtils.getSites();
 const statusDescription = [
   "No response",
@@ -16,7 +16,7 @@ const statusDescription = [
 
 async function check() {
   const results = await sitesUtils.ping(sites);
-  const previous = await statusStorage.read();
+  const previous = await statusStorage.readStatuses();
 
   for (const { site, status, ok } of results) {
     const prev = previous[site];
@@ -27,8 +27,8 @@ async function check() {
 
     if (!prev || prev.ok !== ok) {
       await tg.sendTelegramMessage(
-        TELEGRAM_BOT_TOKEN,
-        CHAT_ID,
+        TG_BOT_TOKEN,
+        TG_CHAT_ID,
         `${site} | status: ${status} : ${statusDescription[statusInd]} | ${
           ok ? "🟢 OK" : "🔴 Alert!"
         }``${site} | status: ${statusText} | ${ok ? "🟢 OK" : "🔴 Alert!"}`
@@ -36,14 +36,14 @@ async function check() {
     }
   }
 
-  await statusStorage.write(results);
+  await statusStorage.writeStatuses(results);
 }
 
 let checkTime = +SITE_CHECK_MINUTES * 60 * 1000;
 
 if (isNaN(checkTime)) {
   checkTime = 5 * 60 * 1000;
-  console.error("❌ Некоректне значення SITE_CHECK_MINUTES у .env");
+  console.error("❌ Incorrect value of SITE_CHECK_MINUTES in .env");
 }
 
 check();

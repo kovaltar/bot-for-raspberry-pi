@@ -3,6 +3,8 @@
 import fetch from 'node-fetch';
 import { AbortController } from 'abort-controller';
 import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 async function ping(sites) {
   const results = [];
@@ -30,23 +32,23 @@ async function ping(sites) {
 
 async function getSites() {
   let sitesArr = [];
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const sitesFilePath = path.join(__dirname, '../sites.json');
   
   try {
-    const raw = await fs.readFile(
-      new URL("../sites.json", import.meta.url),
-      "utf8"
-    );
+    const raw = await fs.readFile(sitesFilePath, "utf8");
   
     if (raw.trim()) {
       sitesArr = JSON.parse(raw);
     } else {
-      console.warn("⚠️ File sites.json is empty порожній.");
+      console.warn("❌ File sites.json is empty.");
     }
   } catch (err) {
     if (err.code === "ENOENT") {
-      console.warn("⚠️ File sites.json was not found.");
+      console.warn("❌ File sites.json was not found.");
     } else {
-      console.error("❌ Error while reading sites.json file:", err.message);
+      console.error("❌ An error occurred while reading sites.json file:", err.message);
     }
   }
 

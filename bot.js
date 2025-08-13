@@ -4,19 +4,19 @@ import { ip } from "./modules/ip.js";
 import { temperature } from "./modules/temperature.js";
 import { sitesUtils } from "./modules/sitesUtils.js";
 
-const { TELEGRAM_BOT_TOKEN } = process.env;
+const { TG_BOT_TOKEN } = process.env;
 
 // bot initialization
-const bot = new Bot(TELEGRAM_BOT_TOKEN);
+const bot = new Bot(TG_BOT_TOKEN);
 
 // /ip — shows public IP address
 bot.command("ip", async (ctx) => {
   try {
     const currentIP = await ip.getPublicIP();
-    await ctx.reply(`Поточний IP: ${currentIP}`);
+    await ctx.reply(`Current IP: ${currentIP}`);
   } catch (err) {
-    console.error("Помилка при отриманні IP:", err.message);
-    await ctx.reply("Не вдалося отримати IP-адресу.");
+    console.error("❌ An error occurred while getting an IP:", err.message);
+    await ctx.reply("❌ Failed to get IP address.");
   }
 });
 
@@ -24,9 +24,9 @@ bot.command("ip", async (ctx) => {
 bot.command("t", (ctx) => {
   const temp = temperature.getTemperature();
   if (temp !== null) {
-    ctx.reply(`Температура CPU: ${temp}°C`);
+    ctx.reply(`CPU temperature: ${temp}°C`);
   } else {
-    ctx.reply("Не вдалося зчитати температуру.");
+    ctx.reply("❌ Failed to get temperature.");
   }
 });
 
@@ -35,7 +35,7 @@ bot.command("status", async (ctx) => {
   const sites = sitesUtils.getSites();
 
   if (!sites.length) {
-    return ctx.reply("Немає сайтів для перевірки.");
+    return ctx.reply("❌ No sites to check.");
   }
 
   try {
@@ -65,9 +65,9 @@ bot.command("status", async (ctx) => {
 
     await ctx.reply(msg);
   } catch (err) {
-    console.error("Помилка при перевірці статусу сайтів:", err.message);
+    console.error("❌ An error occurred while checking sites status:", err.message);
 
-    await ctx.reply("❌ Не вдалося перевірити статус сайтів.");
+    await ctx.reply("❌ Failed to check sites status.");
   }
 });
 
