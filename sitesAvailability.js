@@ -1,5 +1,6 @@
 import 'dotenv/config';
-import sitesFromJSON from './sites.json' assert { type: 'json' };
+import fs from 'fs/promises';
+// import sitesFromJSON from './sites.json' assert { type: 'json' };
 import { sitesMonitor } from './modules/sitesMonitor.js';
 import { tg } from './modules/telegram.js';
 import { statusStorage } from './modules/sitesStatusStorage';
@@ -10,7 +11,25 @@ const {
   SITE_CHECK_MINUTES,
 } = process.env;
 
-const sites = sitesFromJSON || [];
+let sites = [];
+
+try {
+  const raw = await fs.readFile(new URL('./sites.json', import.meta.url), 'utf8');
+
+  if (raw.trim()) {
+    sites = JSON.parse(raw);
+  } else {
+    console.warn('⚠️ File sites.json is empty порожній.');
+  }
+
+} catch (err) {
+  if (err.code === 'ENOENT') {
+    console.warn('⚠️ File sites.json was not found.');
+  } else {
+    console.error('❌ Error while reading sites.json file:', err.message);
+  }
+}
+
 const statusDescription = [
   'No response',
   'Pending',
