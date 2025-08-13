@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { sitesUtils } from "./modules/sitesUtils.js";
 import { tg } from "./modules/telegram.js";
-import { statusStorage } from "./modules/sitesStatusStorage";
+import { statusStorage } from "./modules/sitesStatusStorage.js";
 
 const { TELEGRAM_BOT_TOKEN, CHAT_ID, SITE_CHECK_MINUTES } = process.env;
 const sites = sitesUtils.getSites();
