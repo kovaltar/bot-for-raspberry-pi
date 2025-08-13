@@ -2,6 +2,7 @@
 
 import fetch from 'node-fetch';
 import { AbortController } from 'abort-controller';
+import fs from 'fs/promises';
 
 async function ping(sites) {
   const results = [];
