@@ -1,15 +1,11 @@
 // module for working with IP and Cloudflare
 
+import { getFilePath } from '../utils/getFileFath.js';
 import fs from 'fs';
-import path from 'path';
 import https from 'https';
 import fetch from 'node-fetch';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const ipFilePath = path.join(__dirname, '../last_ip.txt');
+const ipFilePath = getFilePath('../last_ip.txt', import.meta.url);
 
 // gets a public IP address from the ipify service
 function getPublicIP() {
