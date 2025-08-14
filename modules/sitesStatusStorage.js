@@ -1,11 +1,7 @@
+import { getFilePath } from '../utils/getFileFath.js';
 import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const sitesStatusFilePath = path.join(__dirname, '../data/sites-status.json');
+const sitesStatusFilePath = getFilePath('../data/sites-status.json', import.meta.url);
 
 async function readStatuses() {
   try {
