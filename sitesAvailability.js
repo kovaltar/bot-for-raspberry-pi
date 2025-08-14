@@ -29,9 +29,7 @@ async function check() {
       await tg.sendTelegramMessage(
         TG_BOT_TOKEN,
         TG_CHAT_ID,
-        `${site} | status: ${status} : ${statusDescription[statusInd]} | ${
-          ok ? "🟢 OK" : "🔴 Alert!"
-        }``${site} | status: ${statusText} | ${ok ? "🟢 OK" : "🔴 Alert!"}`
+        `${site} | status: ${statusText} | ${ok ? "🟢 OK" : "🔴 Alert!"}`
       );
     }
   }
