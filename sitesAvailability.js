@@ -4,7 +4,7 @@ import { tg } from "./modules/telegram.js";
 import { statusStorage } from "./modules/sitesStatusStorage.js";
 
 const { TG_BOT_TOKEN, TG_CHAT_ID, SITE_CHECK_MINUTES } = process.env;
-const sites = sitesUtils.getSites();
+const sites = await sitesUtils.getSites();
 const statusDescription = [
   "No response",
   "Pending",
