@@ -32,7 +32,7 @@ bot.command("t", (ctx) => {
 
 // /status — shows sites availability
 bot.command("status", async (ctx) => {
-  const sites = sitesUtils.getSites();
+  const sites = await sitesUtils.getSites();
 
   if (!sites.length) {
     return ctx.reply("❌ No sites to check.");
