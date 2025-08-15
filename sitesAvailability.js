@@ -5,14 +5,6 @@ import { statusStorage } from "./modules/sitesStatusStorage.js";
 
 const { TG_BOT_TOKEN, TG_CHAT_ID, SITE_CHECK_MINUTES } = process.env;
 const sites = await sitesUtils.getSites();
-const statusDescription = [
-  "No response",
-  "Pending",
-  "Success",
-  "Redirect",
-  "Client Error",
-  "Server Error",
-];
 
 async function check() {
   const results = await sitesUtils.ping(sites);
@@ -20,16 +12,12 @@ async function check() {
 
   for (const { site, status, ok } of results) {
     const prev = previous[site];
-    const statusInd = typeof status === "number" ? Math.floor(status / 100) : 0;
-    const statusText = `${status ?? "N/A"} : ${
-      statusDescription[statusInd] || "Unknown"
-    }`;
 
     if (!prev || prev.ok !== ok) {
       await tg.sendTelegramMessage(
         TG_BOT_TOKEN,
         TG_CHAT_ID,
-        `${site} | status: ${statusText} | ${ok ? "🟢 OK" : "🔴 Alert!"}`
+        sitesUtils.formatStatus({ site, status, ok })
       );
     }
   }

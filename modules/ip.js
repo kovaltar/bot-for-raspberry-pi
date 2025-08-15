@@ -1,27 +1,29 @@
 // module for working with IP and Cloudflare
 
-import { getFilePath } from '../utils/getFileFath.js';
-import fs from 'fs';
-import https from 'https';
-import fetch from 'node-fetch';
+import { getFilePath } from "../utils/getFilePath.js";
+import fs from "fs";
+import https from "https";
+import fetch from "node-fetch";
 
-const ipFilePath = getFilePath('../last_ip.txt', import.meta.url);
+const ipFilePath = getFilePath("../last_ip.txt", import.meta.url);
 
 // gets a public IP address from the ipify service
 function getPublicIP() {
   return new Promise((resolve, reject) => {
-    https.get('https://api.ipify.org', res => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => resolve(data.trim()));
-    }).on('error', reject);
+    https
+      .get("https://api.ipify.org", (res) => {
+        let data = "";
+        res.on("data", (chunk) => (data += chunk));
+        res.on("end", () => resolve(data.trim()));
+      })
+      .on("error", reject);
   });
 }
 
 // reads the last saved IP from a file
 function readLastIP() {
   try {
-    return fs.readFileSync(ipFilePath, 'utf8').trim();
+    return fs.readFileSync(ipFilePath, "utf8").trim();
   } catch {
     return null;
   }
@@ -29,20 +31,23 @@ function readLastIP() {
 
 // saves the current IP to a file
 function saveCurrentIP(ip) {
-  fs.writeFileSync(ipFilePath, ip, 'utf8');
+  fs.writeFileSync(ipFilePath, ip, "utf8");
 }
 
 // updates the IP address in the DNS record via the Cloudflare API
-async function updateCloudflare(ip, { CF_API_TOKEN, CF_ZONE_ID, CF_RECORD_ID }) {
+async function updateCloudflare(
+  ip,
+  { CF_API_TOKEN, CF_ZONE_ID, CF_RECORD_ID }
+) {
   const url = `https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/dns_records/${CF_RECORD_ID}`;
   const response = await fetch(url, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Authorization': `Bearer ${CF_API_TOKEN}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${CF_API_TOKEN}`,
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      type: 'A',
+      type: "A",
       name: process.env.DNS_RECORD_NAME,
       content: ip,
       ttl: 1,
@@ -53,7 +58,9 @@ async function updateCloudflare(ip, { CF_API_TOKEN, CF_ZONE_ID, CF_RECORD_ID }) 
   const result = await response.json();
 
   if (!result.success) {
-    throw new Error(`❌ Cloudflare update failed: ${JSON.stringify(result.errors)}`);
+    throw new Error(
+      `❌ Cloudflare update failed: ${JSON.stringify(result.errors)}`
+    );
   }
 
   return result;

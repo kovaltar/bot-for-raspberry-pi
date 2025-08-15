@@ -40,27 +40,10 @@ bot.command("status", async (ctx) => {
 
   try {
     const sitesInfo = await sitesUtils.ping(sites);
-    const statusDescription = [
-      "No response",
-      "Pending",
-      "Success",
-      "Redirect",
-      "Client Error",
-      "Server Error",
-    ];
-
     let msg = "";
 
     for (const { site, status, ok } of sitesInfo) {
-      const statusInd =
-        typeof status === "number" ? Math.floor(status / 100) : 0;
-      const statusText = `${status ?? "N/A"} : ${
-        statusDescription[statusInd] || "Unknown"
-      }`;
-
-      msg += `${site} | status: ${statusText} | ${
-        ok ? "🟢 OK" : "🔴 Alert!"
-      }\n`;
+      msg += `${sitesUtils.formatStatus({ site, status, ok})}\n`;
     }
 
     await ctx.reply(msg);
